@@ -1,0 +1,3 @@
+# officeTohtml
+
+这是一个根据POI将office（doc、docx、xlsx等）文档转为html的样例，参考了前人的代码实例，后续会转成maven项目，以便解决项目的jar依赖等问题
