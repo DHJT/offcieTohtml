@@ -42,7 +42,7 @@ public class POIWordToHtml {
 		String content = null;
 		try {
 			if ("doc".equals(ext)) {
-				HWPFDocument wordDocument = new HWPFDocument(new FileInputStream(sourcePath));
+			    HWPFDocument wordDocument = new HWPFDocument(new FileInputStream(sourcePath));
 				WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(
 						DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
 				wordToHtmlConverter.setPicturesManager(new PicturesManager() {

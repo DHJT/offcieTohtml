@@ -19,8 +19,10 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -223,9 +225,11 @@ public class POIExcelToHtml {
 			if (wb instanceof XSSFWorkbook) {
 
 				XSSFFont xf = ((XSSFCellStyle) cellStyle).getFont();
-				short boldWeight = xf.getBoldweight();
+				boolean boldWeight = xf.getBold();
 				sb.append("style='");
-				sb.append("font-weight:" + boldWeight + ";"); // 字体加粗
+				if (boldWeight) {
+				    sb.append("font-weight:bold;"); // 字体加粗
+                }
 				sb.append("font-size: " + xf.getFontHeight() / 2 + "%;"); // 字体大小
 				int columnWidth = sheet.getColumnWidth(cell.getColumnIndex());
 				sb.append("width:" + columnWidth + "px;");
@@ -251,12 +255,15 @@ public class POIExcelToHtml {
 			} else if (wb instanceof HSSFWorkbook) {
 
 				HSSFFont hf = ((HSSFCellStyle) cellStyle).getFont(wb);
-				short boldWeight = hf.getBoldweight();
+				boolean boldWeight = hf.getBold();
 				short fontColor = hf.getColor();
 				sb.append("style='");
 				HSSFPalette palette = ((HSSFWorkbook) wb).getCustomPalette(); // 类HSSFPalette用于求的颜色的国际标准形式
 				HSSFColor hc = palette.getColor(fontColor);
-				sb.append("font-weight:" + boldWeight + ";"); // 字体加粗
+				sb.append("style='");
+				if (boldWeight) {
+				    sb.append("font-weight:bold;"); // 字体加粗
+				}
 				sb.append("font-size: " + hf.getFontHeight() / 2 + "%;"); // 字体大小
 				String fontColorStr = convertToStardColor(hc);
 				if (fontColorStr != null && !"".equals(fontColorStr.trim())) {
@@ -285,21 +292,7 @@ public class POIExcelToHtml {
 	 */
 	@SuppressWarnings("deprecation")
 	private static String convertAlignToHtml(short alignment) {
-
-		String align = "left";
-		switch (alignment) {
-		case CellStyle.ALIGN_LEFT:
-			align = "left";
-			break;
-		case CellStyle.ALIGN_CENTER:
-			align = "center";
-			break;
-		case CellStyle.ALIGN_RIGHT:
-			align = "right";
-			break;
-		default:
-			break;
-		}
+		String align = HorizontalAlignment.forInt(alignment).name();
 		return align;
 	}
 
@@ -308,22 +301,8 @@ public class POIExcelToHtml {
 	 */
 	@SuppressWarnings("deprecation")
 	private static String convertVerticalAlignToHtml(short verticalAlignment) {
-
-		String valign = "middle";
-		switch (verticalAlignment) {
-		case CellStyle.VERTICAL_BOTTOM:
-			valign = "bottom";
-			break;
-		case CellStyle.VERTICAL_CENTER:
-			valign = "center";
-			break;
-		case CellStyle.VERTICAL_TOP:
-			valign = "top";
-			break;
-		default:
-			break;
-		}
-		return valign;
+	    String align = VerticalAlignment.forInt(verticalAlignment).name();
+        return align;
 	}
 
 	private static String convertToStardColor(HSSFColor hc) {
